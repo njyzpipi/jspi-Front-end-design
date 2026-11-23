@@ -1,0 +1,25 @@
+{
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python.defaultInterpreterPath": "C:/Users/cc/AppData/Local/Programs/Python/Python314/python.exe",
+    "python.terminal.activateEnvironment": true,
+    "python.analysis.typeCheckingMode": "basic",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "files.eol": "\n",
+    "[python]": {
+        "editor.tabSize": 4
+    },
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "html.format.wrapLineLength": 100,
+    "css.validate": true,
+    "html.validate.styles": true,
+    "javascript.validate.enable": true
+}
