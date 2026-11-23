@@ -37,7 +37,7 @@ function initGlobe(){
   viewer.scene.backgroundColor=Cesium.Color.fromCssColorString('#03070d');
   viewer.scene.screenSpaceCameraController.minimumZoomDistance=280000;
   viewer.scene.screenSpaceCameraController.maximumZoomDistance=29000000;
-  viewer.camera.setView({destination:Cesium.Cartesian3.fromDegrees(27,30,18000000),orientation:{heading:0,pitch:Cesium.Math.toRadians(-14),roll:0}});
+  viewer.camera.setView({destination:Cesium.Cartesian3.fromDegrees(27,30,18000000),orientation:{heading:0,pitch:Cesium.Math.toRadians(-90),roll:0}});
   addGrid();addReports();addFocusZones();addRoutes();
   viewer.screenSpaceEventHandler.setInputAction((movement)=>{
     const picked=viewer.scene.pick(movement.position);
@@ -92,7 +92,7 @@ function bindUI(){
   document.querySelectorAll('#filterMenu button').forEach(b=>b.addEventListener('click',()=>{currentFilter=b.dataset.filter;document.getElementById('filterButton').innerHTML=`${b.textContent} <span>⌄</span>`;document.querySelector('#filterMenu .active')?.classList.remove('active');b.classList.add('active');document.getElementById('filterMenu').classList.remove('open');renderList();setLayers();}));
   document.querySelectorAll('[data-layer]').forEach(b=>b.addEventListener('click',()=>{const layer=b.dataset.layer;layerState[layer]=!layerState[layer];b.classList.toggle('active',layerState[layer]);setLayers();}));
   document.querySelectorAll('.focus-row').forEach(b=>b.addEventListener('click',()=>{const report=reports.find(r=>r.city===b.dataset.city);if(report)selectReport(report.id,true);}));
-  document.getElementById('resetCamera').addEventListener('click',()=>{if(viewer)viewer.camera.flyTo({destination:Cesium.Cartesian3.fromDegrees(27,30,18000000),orientation:{heading:0,pitch:Cesium.Math.toRadians(-14),roll:0},duration:2});document.getElementById('locationName').textContent='全球视图';showToast('已返回全球态势视角');});
+  document.getElementById('resetCamera').addEventListener('click',()=>{if(viewer)viewer.camera.flyTo({destination:Cesium.Cartesian3.fromDegrees(27,30,18000000),orientation:{heading:0,pitch:Cesium.Math.toRadians(-90),roll:0},duration:2});document.getElementById('locationName').textContent='全球视图';showToast('已返回全球态势视角');});
   document.getElementById('timeSlider').addEventListener('input',e=>{document.getElementById('timelineProgress').style.width=e.target.value+'%';const hour=Math.round(Number(e.target.value)*.24);document.getElementById('timelineLabel').textContent=`${String(hour).padStart(2,'0')}:00 UTC`;});
   document.getElementById('playTimeline').addEventListener('click',e=>{const input=document.getElementById('timeSlider');let playing=e.currentTarget.dataset.playing==='true';playing=!playing;e.currentTarget.dataset.playing=playing;e.currentTarget.textContent=playing?'Ⅱ':'▶';if(playing){window.timelineTimer=setInterval(()=>{input.value=(Number(input.value)+1)%101;input.dispatchEvent(new Event('input'));},130);showToast('正在回放模拟态势');}else{clearInterval(window.timelineTimer);}});
   document.querySelectorAll('.range-chip').forEach(b=>b.addEventListener('click',()=>{document.querySelector('.range-chip.active')?.classList.remove('active');b.classList.add('active');document.getElementById('timelineLabel').textContent=b.textContent==='CUSTOM'?'自定义时间范围':`近 ${b.textContent}`;}));
