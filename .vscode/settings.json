@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "python-envs.defaultEnvManager": "ms-python.python:system",
     "python.defaultInterpreterPath": "C:/Users/cc/AppData/Local/Programs/Python/Python314/python.exe",
     "python.terminal.activateEnvironment": true,
@@ -8,12 +9,26 @@
     "files.eol": "\n",
     "[python]": {
         "editor.tabSize": 4
+=======
+    "editor.formatOnSave": true,
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+>>>>>>> 9ac9dba7d0204ec5239914388438436d04aac6df
     },
     "[html]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[css]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
+<<<<<<< HEAD
     },
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -23,3 +38,7 @@
     "html.validate.styles": true,
     "javascript.validate.enable": true
 }
+=======
+    }
+}
+>>>>>>> 9ac9dba7d0204ec5239914388438436d04aac6df

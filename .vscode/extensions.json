@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "recommendations": [
     "ms-python.python",
     "ms-python.vscode-pylance",
@@ -10,3 +11,12 @@
     "ritwickdey.LiveServer"
   ]
 }
+=======
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "esbenp.prettier-vscode"
+    ]
+}
+>>>>>>> 9ac9dba7d0204ec5239914388438436d04aac6df

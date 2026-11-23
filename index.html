@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050a11" />
+    <title>ORBIT // 全球态势情报系统</title>
+    <link rel="preconnect" href="https://cesium.com" />
+    <link rel="preconnect" href="https://tile.openstreetmap.org" />
+    <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.124/Build/Cesium/Widgets/widgets.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div id="cesiumContainer" aria-label="可交互三维地球"></div>
+      <div class="map-vignette"></div>
+      <div class="map-grid"></div>
+
+      <header class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark"><span></span><span></span><span></span></div>
+          <div><div class="brand-name">ORBIT <span>INTELLIGENCE</span></div><div class="brand-sub">GLOBAL SITUATION AWARENESS</div></div>
+        </div>
+        <div class="header-center"><span class="live-dot"></span><span>GLOBAL OPERATIONS PICTURE</span><i></i><span class="classification">SIMULATION / TRAINING DATA</span></div>
+        <div class="header-tools"><div class="utc-clock"><b id="clockTime">--:--:--</b><span>UTC</span></div><button class="icon-button" id="searchButton" title="搜索事件">⌕</button><button class="icon-button" id="fullscreenButton" title="全屏">⛶</button></div>
+      </header>
+
+      <main class="dashboard">
+        <aside class="left-column">
+          <section class="panel situation-panel">
+            <div class="panel-heading"><div class="heading-label"><span class="section-index">01</span><h2>态势摘要</h2></div><button class="quiet-button" id="refreshButton" title="重新载入模拟态势">↻</button></div>
+            <div class="summary-number"><strong id="eventCount">08</strong><span>ACTIVE REPORTS</span><b class="severity-badge"><i></i> ELEVATED</b></div>
+            <div class="summary-breakdown"><div><span>已核实</span><b>05</b></div><div><span>评估中</span><b>02</b></div><div><span>待确认</span><b>01</b></div></div>
+            <div class="sparkline-wrap"><div class="micro-label">24H REPORT VOLUME <span>+12.4%</span></div><canvas id="sparkline" width="440" height="70"></canvas></div>
+          </section>
+
+          <section class="panel reports-panel">
+            <div class="panel-heading"><div class="heading-label"><span class="section-index">02</span><h2>事件流</h2></div><button class="filter-button" id="filterButton">全部类型 <span>⌄</span></button></div>
+            <div class="filter-menu" id="filterMenu">
+              <button data-filter="all" class="active">全部类型</button><button data-filter="security">安全态势</button><button data-filter="infrastructure">基础设施</button><button data-filter="humanitarian">人道动态</button>
+            </div>
+            <div class="report-list" id="reportList"></div>
+            <button class="panel-footer-button" id="showAllButton">查看全部事件 <span>↗</span></button>
+          </section>
+
+          <section class="panel focus-panel">
+            <div class="panel-heading"><div class="heading-label"><span class="section-index">03</span><h2>关注区域</h2></div><span class="tiny-counter">03 / 12</span></div>
+            <button class="focus-row" data-city="Nerava"><span class="focus-pin red"></span><span><b>北部走廊</b><small>NERAVA REGION</small></span><em>HIGH</em></button>
+            <button class="focus-row" data-city="Veyra"><span class="focus-pin amber"></span><span><b>东部沿岸</b><small>VEYRA COAST</small></span><em class="amber-text">WATCH</em></button>
+            <button class="focus-row" data-city="Sorell"><span class="focus-pin blue"></span><span><b>南方枢纽</b><small>SORELL DISTRICT</small></span><em class="blue-text">STABLE</em></button>
+          </section>
+        </aside>
+
+        <section class="map-hud" aria-label="地球态势图层控制">
+          <div class="map-location"><span class="location-cross">＋</span><div><b id="locationName">全球视图</b><small id="locationCoords">28.6° N  ·  18.4° E</small></div></div>
+          <div class="map-controls"><div class="control-stack">
+            <button class="map-tool active" data-layer="events" title="事件标记"><span>◉</span></button>
+            <button class="map-tool active" data-layer="routes" title="关联路径"><span>⌁</span></button>
+            <button class="map-tool active" data-layer="zones" title="关注区域"><span>◌</span></button>
+            <button class="map-tool" id="resetCamera" title="返回全球视图"><span>◎</span></button>
+          </div><div class="tool-caption">图层控制</div></div>
+          <div class="map-scale"><span></span> 1000 KM</div>
+          <div class="map-legend"><span><i class="legend-dot red"></i>高优先级</span><span><i class="legend-dot amber"></i>关注</span><span><i class="legend-dot cyan"></i>常规报告</span></div>
+          <div class="map-attribution">BASEMAP · OPENSTREETMAP</div>
+          <div class="map-credit">NOTIONAL DATA · FOR DEMONSTRATION ONLY</div>
+        </section>
+
+        <aside class="right-column">
+          <section class="metric-grid">
+            <div class="metric-tile"><span class="metric-icon">⌖</span><small>关注区域</small><strong>12</strong><em>+2 本周</em></div>
+            <div class="metric-tile"><span class="metric-icon">⌁</span><small>关联报告</small><strong>36</strong><em>近 24 小时</em></div>
+            <div class="metric-tile"><span class="metric-icon">◷</span><small>评估周期</small><strong>04<span>H</span></strong><em>滚动窗口</em></div>
+          </section>
+          <section class="panel detail-panel">
+            <div class="panel-heading"><div class="heading-label"><span class="section-index">04</span><h2>情报摘要</h2></div><button class="quiet-button" title="更多操作">···</button></div>
+            <div id="detailContent" class="detail-content"></div>
+          </section>
+          <section class="panel relation-panel">
+            <div class="panel-heading"><div class="heading-label"><span class="section-index">05</span><h2>关联网络</h2></div><span class="tiny-counter">LINK ANALYSIS</span></div>
+            <div class="network-graph" id="networkGraph">
+              <svg viewBox="0 0 400 180" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path d="M66 89 L168 46 L263 80 L342 39 M66 89 L152 137 L263 80 L325 137 M168 46 L218 143 M263 80 L342 39"/><path class="soft-path" d="M66 89 Q200 15 342 39 M152 137 Q232 176 325 137"/></svg>
+              <button class="network-node node-a" data-node="区域态势"><span>NR</span><small>区域态势</small></button><button class="network-node node-b" data-node="交通枢纽"><span>TR</span><small>交通枢纽</small></button><button class="network-node node-c" data-node="民用设施"><span>CI</span><small>民用设施</small></button><button class="network-node node-d" data-node="公开报道"><span>OS</span><small>公开报道</small></button><button class="network-node node-e" data-node="环境监测"><span>WX</span><small>环境监测</small></button><button class="network-node node-f" data-node="时间序列"><span>TS</span><small>时间序列</small></button>
+            </div>
+            <div class="network-caption"><span class="live-dot"></span> 6 个实体 · 8 条关联 <button id="expandNetwork">展开分析 ↗</button></div>
+          </section>
+          <section class="panel assessment-panel">
+            <div class="panel-heading"><div class="heading-label"><span class="section-index">06</span><h2>综合评估</h2></div><span class="assessment-state">持续监测</span></div>
+            <div class="assessment-meter"><div class="meter-ring"><strong>64</strong><small>/100</small></div><div class="meter-copy"><b>态势关注指数</b><span>较前一周期 <i>+08</i></span><small>多源信息综合评估</small></div><div class="meter-bars"><i style="--v:70%"></i><i style="--v:46%"></i><i style="--v:82%"></i><i style="--v:56%"></i><i style="--v:90%"></i><i style="--v:62%"></i><i style="--v:76%"></i></div></div>
+          </section>
+        </aside>
+
+        <section class="bottom-dock">
+          <div class="dock-title"><span class="section-index">07</span><b>区域态势指标</b><small>REGIONAL OVERVIEW</small></div>
+          <article class="dock-metric"><span class="dock-symbol cyan">◉</span><div><small>信息完整度</small><strong>82.6<span>%</span></strong><div class="progress"><i style="--v:82.6%"></i></div></div><em class="positive">+4.2%</em></article>
+          <article class="dock-metric"><span class="dock-symbol blue">⌁</span><div><small>交通影响报告</small><strong>14<span> 条</span></strong><div class="progress"><i style="--v:64%"></i></div></div><em>近 24 小时</em></article>
+          <article class="dock-metric"><span class="dock-symbol amber">◷</span><div><small>待复核条目</small><strong>07<span> 项</span></strong><div class="progress amber-progress"><i style="--v:38%"></i></div></div><em class="amber-text">优先处理</em></article>
+          <article class="dock-metric"><span class="dock-symbol green">⌖</span><div><small>区域覆盖率</small><strong>91.3<span>%</span></strong><div class="progress green-progress"><i style="--v:91.3%"></i></div></div><em class="positive">+1.8%</em></article>
+          <article class="dock-metric warning-metric"><span class="dock-symbol red">!</span><div><small>高优先级提示</small><strong>03<span> 项</span></strong><div class="warning-lines"><i></i><i></i><i></i></div></div><em class="red-text">需关注</em></article>
+        </section>
+      </main>
+
+      <footer class="timeline-bar">
+        <div class="timeline-heading"><span class="section-index">08</span><b>时间回溯</b><button id="playTimeline" title="播放时间线">▶</button><span id="timelineLabel">近 24 小时</span></div>
+        <div class="timeline-track-wrap"><div class="timeline-ticks"><span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>24:00</span></div><div class="timeline-track"><div class="timeline-progress" id="timelineProgress"></div><input id="timeSlider" type="range" min="0" max="100" value="72" aria-label="时间回溯"></div><div class="timeline-events"><i style="--x:13%"></i><i style="--x:29%"></i><i class="hot" style="--x:48%"></i><i style="--x:62%"></i><i class="hot" style="--x:73%"></i><i style="--x:91%"></i></div></div>
+        <div class="timeline-range"><button class="range-chip">24H</button><button class="range-chip">7D</button><button class="range-chip">30D</button><button class="range-chip active">CUSTOM</button></div>
+      </footer>
+      <div class="toast" id="toast"></div>
+    </div>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.124/Build/Cesium/Cesium.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
