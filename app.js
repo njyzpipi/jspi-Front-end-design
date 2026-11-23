@@ -21,7 +21,7 @@ function initGlobe(){
   if(!window.Cesium){showToast('CesiumJS 未能加载，请检查网络连接');return;}
   Cesium.Ion.defaultAccessToken = undefined;
   viewer = new Cesium.Viewer('cesiumContainer',{
-    imageryProvider:new Cesium.OpenStreetMapImageryProvider({url:'https://tile.openstreetmap.org/'}),
+    imageryProvider:new Cesium.SingleTileImageryProvider({url:createWorldTexture(),rectangle:Cesium.Rectangle.MAX_VALUE}),
     terrainProvider:new Cesium.EllipsoidTerrainProvider(),
     baseLayerPicker:false,geocoder:false,homeButton:false,sceneModePicker:false,
     navigationHelpButton:false,animation:false,timeline:false,fullscreenButton:false,
@@ -43,6 +43,32 @@ function initGlobe(){
     const picked=viewer.scene.pick(movement.position);
     if(picked&&picked.id&&picked.id.properties&&picked.id.properties.reportId){selectReport(picked.id.properties.reportId.getValue());}
   },Cesium.ScreenSpaceEventType.LEFT_CLICK);
+}
+function createWorldTexture(){
+  const canvas=document.createElement('canvas');canvas.width=2048;canvas.height=1024;const ctx=canvas.getContext('2d');
+  const ocean=ctx.createLinearGradient(0,0,0,1024);ocean.addColorStop(0,'#061522');ocean.addColorStop(.48,'#10293a');ocean.addColorStop(1,'#071722');ctx.fillStyle=ocean;ctx.fillRect(0,0,2048,1024);
+  const project=(coords)=>coords.map(([lon,lat])=>[(lon+180)/360*canvas.width,(90-lat)/180*canvas.height]);
+  const land=[
+    [[-168,70],[-150,72],[-135,62],[-126,54],[-124,42],[-117,32],[-108,29],[-98,20],[-91,18],[-84,25],[-80,32],[-74,40],[-67,45],[-60,52],[-79,58],[-93,66],[-111,72],[-130,70],[-148,72]],
+    [[-53,82],[-37,78],[-25,70],[-40,59],[-52,61],[-61,70]],
+    [[-81,12],[-70,8],[-61,-4],[-51,-2],[-45,-10],[-39,-21],[-48,-31],[-53,-45],[-66,-56],[-72,-42],[-76,-25],[-79,-7]],
+    [[-11,36],[-8,44],[-4,50],[4,55],[15,57],[24,63],[35,70],[48,67],[63,72],[84,75],[101,70],[119,63],[138,55],[151,48],[161,57],[174,53],[178,45],[164,38],[145,43],[132,35],[121,26],[113,19],[107,9],[100,2],[91,6],[83,18],[74,22],[65,25],[56,26],[49,18],[43,12],[40,4],[33,-3],[28,-10],[20,-18],[12,-23],[13,-34],[20,-35],[31,-30],[34,-20],[40,-12],[48,-16],[50,-25],[42,-34],[32,-35],[20,-34],[14,-27],[9,-16],[3,-5],[-2,5],[-7,12],[-13,21],[-16,29]],
+    [[-10,36],[-5,35],[2,37],[10,34],[19,31],[28,31],[34,24],[42,12],[50,0],[48,-12],[43,-21],[38,-30],[27,-35],[18,-34],[12,-27],[8,-17],[3,-6],[-1,5],[-7,12],[-12,21],[-16,29]],
+    [[112,-11],[130,-12],[146,-17],[153,-27],[147,-39],[132,-44],[118,-34],[113,-23]],
+    [[47,-13],[50,-17],[49,-25],[45,-24]],
+    [[130,33],[137,35],[142,42],[145,44],[141,35]],
+    [[95,5],[107,3],[119,-3],[127,-8],[120,-9],[110,-5],[102,-1]],
+    [[-8,58],[-3,59],[0,55],[-4,51],[-7,54]],
+    [[-180,-72],[-120,-74],[-60,-73],[0,-75],[60,-73],[120,-74],[180,-72],[180,-90],[-180,-90]]
+  ];
+  land[3]=[[-11,36],[-8,44],[-4,50],[4,55],[15,57],[24,63],[35,70],[48,67],[63,72],[84,75],[101,70],[119,63],[138,55],[151,48],[161,57],[174,53],[178,45],[164,38],[145,43],[132,35],[121,26],[113,19],[107,9],[100,2],[91,6],[83,18],[74,22],[65,25],[56,26],[49,18],[43,12],[40,4],[33,-3],[28,-10],[20,-18],[13,-23],[12,-34],[20,-35],[31,-30],[34,-20],[40,-12],[48,-16],[50,-25],[42,-34],[32,-35],[20,-34],[14,-27],[9,-16],[3,-5],[-2,5],[-7,12],[-13,21],[-16,29]];
+  land.forEach((coords,index)=>{const points=project(coords);ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();const fill=ctx.createLinearGradient(0,Math.min(...points.map(p=>p[1])),0,Math.max(...points.map(p=>p[1])));fill.addColorStop(0,index===10?'#102332':'#315061');fill.addColorStop(1,index===10?'#0c1d2b':'#1b3a4b');ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle='rgba(111,193,222,.62)';ctx.lineWidth=2;ctx.stroke();});
+  ctx.strokeStyle='rgba(104,181,213,.16)';ctx.lineWidth=1;
+  for(let lat=-60;lat<=60;lat+=30){const y=(90-lat)/180*canvas.height;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}
+  for(let lon=-150;lon<180;lon+=30){const x=(lon+180)/360*canvas.width;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}
+  const lights=[[-74,40],[-118,34],[-99,19],[-46,-23],[-3,52],[2,49],[13,52],[29,41],[31,30],[37,55],[55,25],[77,29],[103,1],[116,40],[121,31],[127,37],[139,36],[151,-34],[18,-34]];
+  lights.forEach(([lon,lat],i)=>{const [x,y]=project([[lon,lat]])[0];ctx.beginPath();ctx.arc(x,y,i%4===0?3:2,0,Math.PI*2);ctx.fillStyle='rgba(119,222,255,.78)';ctx.shadowBlur=12;ctx.shadowColor='#55c9fb';ctx.fill();ctx.shadowBlur=0;});
+  return canvas.toDataURL('image/png');
 }
 function addGrid(){
   for(let lat=-60;lat<=60;lat+=30){const positions=[];for(let lon=-180;lon<=180;lon+=3)positions.push(lon,lat);viewer.entities.add({polyline:{positions:Cesium.Cartesian3.fromDegreesArray(positions),width:0.6,material:Cesium.Color.fromCssColorString('#70b9df').withAlpha(.17)}});}
