@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#050a11" />
     <title>ORBIT // 全球态势情报系统</title>
     <link rel="preconnect" href="https://cesium.com" />
-    <link rel="preconnect" href="https://tile.openstreetmap.org" />
+    <link rel="preconnect" href="https://services.arcgisonline.com" />
     <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.124/Build/Cesium/Widgets/widgets.css" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
@@ -57,11 +57,13 @@
             <button class="map-tool active" data-layer="events" title="事件标记"><span>◉</span></button>
             <button class="map-tool active" data-layer="routes" title="关联路径"><span>⌁</span></button>
             <button class="map-tool active" data-layer="zones" title="关注区域"><span>◌</span></button>
+            <button class="map-tool active" data-layer="borders" title="国家边界与地名"><span>⌗</span></button>
+            <button class="map-tool active" data-layer="terrain" title="地形阴影"><span>△</span></button>
             <button class="map-tool" id="resetCamera" title="返回全球视图"><span>◎</span></button>
           </div><div class="tool-caption">图层控制</div></div>
           <div class="map-scale"><span></span> 1000 KM</div>
           <div class="map-legend"><span><i class="legend-dot red"></i>高优先级</span><span><i class="legend-dot amber"></i>关注</span><span><i class="legend-dot cyan"></i>常规报告</span></div>
-          <div class="map-attribution">BASEMAP · OPENSTREETMAP</div>
+          <div class="map-attribution" id="mapStatus">正在初始化地球</div>
           <div class="map-credit">NOTIONAL DATA · FOR DEMONSTRATION ONLY</div>
         </section>
 
@@ -106,7 +108,9 @@
       </footer>
       <div class="toast" id="toast"></div>
     </div>
+    <script>window.CESIUM_BASE_URL = 'https://cesium.com/downloads/cesiumjs/releases/1.124/Build/Cesium/';</script>
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.124/Build/Cesium/Cesium.js"></script>
+    <script src="./assets/world/ne_10m_admin_0_countries.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
